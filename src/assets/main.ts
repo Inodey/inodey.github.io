@@ -16,18 +16,35 @@ const categories: Category[] = [
   "IEMs",
 ];
 
+window.addEventListener("keydown", (e) => {
+  if (e.code === "Space" && e.target instanceof HTMLButtonElement) {
+    e.preventDefault();
+  }
+});
+
+window.addEventListener("contextmenu", (e) => e.preventDefault());
+window.addEventListener("copy", (e) => e.preventDefault());
+
 function setupRain() {
   const canvas = document.getElementById("rain-canvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
   let w = (canvas.width = window.innerWidth);
   let h = (canvas.height = window.innerHeight);
+
   const setCanvasSize = () => {
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
   };
 
-  const rainCount = 180;
-  const rain: any[] = [];
+  const rainCount = 360;
+  interface RainDrop {
+    x: number;
+    y: number;
+    l: number;
+    xs: number;
+    ys: number;
+  }
+  const rain: RainDrop[] = [];
   for (let i = 0; i < rainCount; i++) {
     rain.push({
       x: Math.random() * w,
@@ -38,28 +55,48 @@ function setupRain() {
     });
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < rainCount; i++) {
-      const p = rain[i];
-      const opacity = p.l * 0.2 + 0.05;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-      ctx.lineWidth = p.l * 1.5 + 0.5;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x + p.xs, p.y + p.l * 20 + 10);
-      ctx.stroke();
-      p.x += p.xs;
-      p.y += p.ys + p.l * 10;
-      if (p.x > w || p.y > h || p.x < -20) {
-        p.x = Math.random() * w;
-        p.y = -20;
+  let lastUpdate = performance.now();
+  const fps = 60;
+  const interval = 1000 / fps;
+
+  function draw(currentTime: number) {
+    if (document.visibilityState === "hidden") {
+      requestAnimationFrame(draw);
+      return;
+    }
+
+    const elapsed = currentTime - lastUpdate;
+    if (elapsed > interval) {
+      lastUpdate = currentTime - (elapsed % interval); // Accurate timer
+
+      ctx.clearRect(0, 0, w, h);
+
+      for (let i = 0; i < rainCount; i++) {
+        const p = rain[i];
+        const opacity = p.l * 0.2 + 0.05;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+        ctx.lineWidth = p.l * 1.5 + 0.5;
+
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + p.xs, p.y + (p.l * 20 + 10));
+        ctx.stroke();
+
+        p.x += p.xs;
+        p.y += p.ys + p.l * 10;
+
+        if (p.x > w || p.y > h || p.x < -20) {
+          p.x = Math.random() * w;
+          p.y = -20;
+        }
       }
     }
+
     requestAnimationFrame(draw);
   }
+
   window.addEventListener("resize", setCanvasSize);
-  draw();
+  requestAnimationFrame(draw);
 }
 
 function enterSite() {
@@ -136,67 +173,91 @@ function spawnBeam(e: Event) {
   setTimeout(() => beam.remove(), 1200);
 }
 
-function renderGrid() {
+let prevIndex = categories.indexOf(currentCategory);
+
+function renderGrid(direction: "left" | "right" | "none" = "none") {
   const filteredItems = peripherals.filter(
     (p) => p.category === currentCategory,
   );
-  gridContainer.innerHTML = filteredItems
-    .map(
-      (item: Peripheral) => `
-    <div class="card tier-${item.tier}">
-      <div class="tier-badge">Tier ${item.tier}</div>
-      <div class="card-content">
-        <h2>${item.brand} ${item.name}</h2>
-        <p class="description"><strong>Description:</strong> ${item.description}</p>
-        <div class="lists">
-          <div class="pros"><strong>Pros</strong><ul>${item.pros.map((p) => `<li>${p}</li>`).join("")}</ul></div>
-          <div class="cons"><strong>Cons</strong><ul>${item.cons.map((c) => `<li>${c}</li>`).join("")}</ul></div>
-        </div>
-        <div class="holographic-container">
-          <button class="specs-btn holographic-card" data-name="${item.name}">View Specs</button>
-        </div>
-        <div class="overview-section">
-          <p class="overview-label">Overview:</p>
-          ${
-            item.videoUrl
-              ? `
-            <div class="v-title-box">Loading video title...</div>
-            <a href="${item.videoUrl}" target="_blank" class="video-window" data-url="${item.videoUrl}">
-              <div class="thumbnail" style="background-image: url('${getThumb(item.videoUrl)}')"></div>
-            </a>
-          `
-              : `<div class="video-window empty"><div class="empty-text">No video.</div></div>`
-          }
+
+  gridContainer.className = `grid ${direction === "left" ? "swipe-out-left" : direction === "right" ? "swipe-out-right" : ""}`;
+
+  setTimeout(() => {
+    gridContainer.innerHTML = filteredItems
+      .map(
+        (item: Peripheral) => `
+      <div class="card tier-${item.tier}">
+        <div class="tier-badge">Tier ${item.tier}</div>
+        <div class="card-content">
+          <h2>${item.brand} ${item.name}</h2>
+          <p class="description"><strong>Description:</strong> ${item.description}</p>
+          <div class="lists">
+            <div class="pros"><strong>Pros</strong><ul>${item.pros.map((p) => `<li>${p}</li>`).join("")}</ul></div>
+            <div class="cons"><strong>Cons</strong><ul>${item.cons.map((c) => `<li>${c}</li>`).join("")}</ul></div>
+          </div>
+          <div class="holographic-container">
+            <button class="specs-btn holographic-card" data-name="${item.name}">View Specs</button>
+          </div>
+          <div class="overview-section">
+            <p class="overview-label">Overview:</p>
+            ${
+              item.videoUrl
+                ? `
+              <div class="v-title-box">Loading video title...</div>
+              <a href="${item.videoUrl}" target="_blank" class="video-window" data-url="${item.videoUrl}">
+                <div class="thumbnail" style="background-image: url('${getThumb(item.videoUrl)}')"></div>
+              </a>
+            `
+                : `<div class="video-window empty"><div class="empty-text">Looks like there's no worth to watch video or not yet out!</div></div>`
+            }
+          </div>
         </div>
       </div>
-    </div>
-  `,
-    )
-    .join("");
+    `,
+      )
+      .join("");
 
-  document.querySelectorAll<HTMLButtonElement>(".specs-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) =>
-      showSpecs((e.target as HTMLButtonElement).dataset.name!),
-    );
-    btn.addEventListener("mouseenter", spawnBeam);
-  });
-  fetchTitles();
+    gridContainer.className = `grid ${direction === "left" ? "swipe-in-right" : direction === "right" ? "swipe-in-left" : ""}`;
+
+    document
+      .querySelectorAll<HTMLButtonElement>(".specs-btn")
+      .forEach((btn) => {
+        btn.addEventListener("click", (e) =>
+          showSpecs((e.target as HTMLButtonElement).dataset.name!),
+        );
+        btn.addEventListener("mouseenter", spawnBeam);
+      });
+    fetchTitles();
+  }, 300);
 }
 
 function initNav() {
   navBar.innerHTML = categories
     .map(
       (cat) =>
-        `<button class="nav-btn ${cat === currentCategory ? "active" : ""}" data-cat="${cat}">${cat}</button>`,
+        `<button class="nav-btn holographic-card ${cat === currentCategory ? "active" : ""}" data-cat="${cat}">${cat}</button>`,
     )
     .join("");
+
   const buttons = document.querySelectorAll<HTMLButtonElement>(".nav-btn");
   buttons.forEach((btn) => {
+    // Add holographic beam to nav buttons
+    btn.addEventListener("mouseenter", spawnBeam);
+
     btn.addEventListener("click", () => {
-      currentCategory = btn.dataset.cat as Category;
+      const newCategory = btn.dataset.cat as Category;
+      if (newCategory === currentCategory) return;
+
+      const newIndex = categories.indexOf(newCategory);
+      const direction = newIndex > prevIndex ? "left" : "right";
+
+      currentCategory = newCategory;
+      prevIndex = newIndex;
+
       buttons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      renderGrid();
+
+      renderGrid(direction);
     });
   });
 }

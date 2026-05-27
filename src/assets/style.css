@@ -1,12 +1,20 @@
 :root {
     --bg: rgb(0, 0, 25);
-    --glass: rgba(255, 255, 255, 0.1);
-    --border: rgba(255, 255, 255, 0.1);
+    --glass: rgba(255, 255, 255, 0.025);
+    --border: rgba(255, 255, 255, 0.025);
     --text: rgba(255, 255, 255, 1);
     --tier-0: rgb(0, 255, 75);
     --tier-1: rgb(225, 225, 0);
     --tier-2: rgb(255, 25, 0);
     --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 body {
@@ -18,6 +26,7 @@ body {
     color-scheme: dark;
     overflow-x: hidden;
 }
+
 #rain-canvas {
     position: fixed;
     top: 0;
@@ -26,6 +35,22 @@ body {
     height: 100%;
     z-index: -1;
     pointer-events: none;
+}
+
+.description,
+.spec-value {
+    white-space: pre-wrap !important;
+    text-align: left !important;
+    word-break: break-word;
+}
+
+.description,
+.spec-value,
+.pros li,
+.cons li,
+.empty-text {
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .landing-overlay {
@@ -58,6 +83,7 @@ body {
     margin-bottom: 2rem;
     letter-spacing: -2px;
 }
+
 .landing-subtitle {
     font-size: 1.8rem;
     line-height: 1.4;
@@ -71,9 +97,11 @@ body {
     transition: opacity 0.3s var(--ease-in-out-cubic);
     pointer-events: none;
 }
+
 .fade-in {
     animation: fadeIn 0.5s var(--ease-in-out-cubic) forwards;
 }
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -94,6 +122,7 @@ body {
     align-items: center;
     width: 100%;
 }
+
 .nav-btn {
     flex: 0 0 15%;
     background: var(--glass);
@@ -107,11 +136,12 @@ body {
     transition: all 0.3s var(--ease-in-out-cubic);
     text-align: center;
 }
+
 .nav-btn.active {
     background: rgba(255, 255, 255, 1);
     color: #000;
     border-color: #fff;
-    transform: scale(1.2);
+    transform: scale(1.15);
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
 }
 
@@ -122,6 +152,7 @@ body {
     max-width: 1600px;
     margin: 0 auto;
 }
+
 .card {
     background: var(--glass);
     border-radius: 16px;
@@ -138,14 +169,17 @@ body {
     font-weight: 900;
     text-align: center;
 }
+
 .tier-0 .tier-badge {
     background: var(--tier-0);
     color: #000;
 }
+
 .tier-1 .tier-badge {
     background: var(--tier-1);
     color: #000;
 }
+
 .tier-2 .tier-badge {
     background: var(--tier-2);
     color: #fff;
@@ -158,11 +192,13 @@ body {
     flex-direction: column;
     gap: 1.2rem;
 }
+
 h2 {
     margin: 0;
     font-size: 2rem;
     text-align: left;
 }
+
 .description {
     color: rgba(255, 255, 255, 0.7);
     font-size: 1.3rem;
@@ -174,17 +210,21 @@ h2 {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
+
 .pros strong,
 .cons strong {
     font-size: 1.1rem;
     text-transform: uppercase;
 }
+
 .pros strong {
     color: var(--tier-0);
 }
+
 .cons strong {
     color: var(--tier-2);
 }
+
 ul {
     list-style: none;
     padding: 0;
@@ -206,6 +246,7 @@ ul {
     transition: all 0.3s var(--ease-in-out-cubic);
     cursor: pointer;
 }
+
 .holographic-card:hover {
     color: #fff;
     border-color: rgba(255, 255, 255, 0.4);
@@ -262,27 +303,31 @@ ul {
     opacity: 0;
     pointer-events: none;
 }
+
 .modal-overlay.active {
     backdrop-filter: blur(30px);
     opacity: 1;
     pointer-events: auto;
 }
+
 .modal-content {
     background: rgba(20, 20, 20, 0.9);
     padding: 2.5rem;
     border-radius: 20px;
     border: 1px solid var(--border);
-    width: 33vw;
-    height: 33vh;
+    width: 48vw;
+    height: 48vh;
     display: flex;
     flex-direction: column;
     transform: scale(0);
     transition: transform 0.3s var(--ease-in-out-cubic);
     overflow-y: auto;
 }
+
 .modal-overlay.active .modal-content {
     transform: scale(1);
 }
+
 .close-modal {
     position: absolute;
     top: 15px;
@@ -293,16 +338,21 @@ ul {
     font-size: 2.5rem;
     cursor: pointer;
 }
+
 .spec-row {
     display: flex;
-    justify-content: space-between;
-    padding: 0.8rem 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0;
     border-bottom: 1px solid var(--border);
 }
+
 .spec-key {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
 }
+
 .spec-value {
     color: #fff;
     font-size: 1.4rem;
