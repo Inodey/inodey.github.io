@@ -1,1 +1,1 @@
-[![Website](https://img.shields.io/badge/Visit_My_Website-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://inodey.github.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://inodey.github.io/)
