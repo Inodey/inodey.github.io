@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/x-icon" href="./icon.ico" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="dark" />
+
+        <title>Tier List</title>
+
+        <meta property="og:title" content="Inodey's Peripheral Tier List" />
+        <meta
+            property="og:description"
+            content="Pure value. No glazing. If you disagree, go fuck yourself."
+        />
+        <meta property="og:type" content="website" />
+    </head>
+    <body>
+        <canvas id="rain-canvas"></canvas>
+
+        <div id="landing-page" class="landing-overlay">
+            <div class="landing-content">
+                <h1 class="landing-title">
+                    Inodey's personal rating of peripherals
+                </h1>
+                <p class="landing-subtitle">
+                    This is purely personal, and was made with sane mind, if you
+                    disagree with me, go fuck yourself, because compare to you,
+                    I actually look at value instead of being soft as fuck OR
+                    glazing the shit out of some specific brand.
+                </p>
+                <div class="holographic-container">
+                    <button id="enter-btn" class="holographic-card">
+                        Alright, show the list!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="app" style="display: none">
+            <nav id="nav-bar"></nav>
+            <main id="grid-container" class="grid"></main>
+        </div>
+        <script type="module" src="/src/assets/main.ts"></script>
+    </body>
+</html>
