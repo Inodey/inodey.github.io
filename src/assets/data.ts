@@ -15,6 +15,24 @@ export interface Peripheral {
 
 export const peripherals: Peripheral[] = [
   {
+    category: "Mousepad",
+    tier: "0",
+    brand: "ATK Gear",
+    name: "Sky (XSoft)",
+    description:
+      "One of the best (if not the best) balance mousepads for under 30£ if available from AliExpress (not through Amazon or official website, though if you are in China, ordering from official website is better choice). You can basically call it a bit less durable, much cheaper Artisan FX Zero",
+    pros: ["1. None other than being cheap."],
+    cons: ["2. Very niche, no proper review videos out there."],
+    specs: {
+      Firmness: "XSoft (eXtra Soft)",
+      Dimensions: "490x420x4mm or 360x300x4mm",
+      Material: "Korean Polyurethane",
+      "Recommended for": "osu!lazer, CS2, Valorant, etc.",
+      Colours: "Black and Orange",
+    },
+  },
+
+  {
     category: "Mouse",
     tier: "0",
     brand: "ATK Gear",
